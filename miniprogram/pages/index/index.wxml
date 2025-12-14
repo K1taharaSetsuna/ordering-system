@@ -1,0 +1,23 @@
+<view class="container">
+  <view class="header">
+    <text class="title">今日菜单</text>
+  </view>
+
+  <scroll-view scroll-y="true" class="menu-list">
+    <block wx:for="{{dishes}}" wx:key="id">
+      <view class="dish-card">
+        <image class="dish-img" src="{{item.image}}" mode="aspectFill"></image>
+        <view class="dish-info">
+          <text class="dish-name">{{item.name}}</text>
+          <text class="dish-price">¥{{item.price}}</text>
+          <button class="add-btn" size="mini" bindtap="addToCart" data-item="{{item}}">选购</button>
+        </view>
+      </view>
+    </block>
+    
+    <!-- 空状态提示 -->
+    <view wx:if="{{!loading && dishes.length === 0}}" class="empty-tip">
+      <text>暂无菜品，请联系管理员添加</text>
+    </view>
+  </scroll-view>
+</view>

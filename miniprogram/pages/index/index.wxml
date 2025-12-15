@@ -1,86 +1,94 @@
 <view class="container">
-  <!-- 顶部：堂食/外带切换 -->
-  <view class="top-bar">
-    <view class="store-info">
-      <text class="store-name">KFC (实训店)</text>
-      <text class="store-distance">距离您 50m</text>
-    </view>
-    <view class="dining-mode-switch">
-      <view class="mode-item {{diningMode === 'eat-in' ? 'active' : ''}}" bindtap="switchDiningMode" data-mode="eat-in">堂食</view>
-      <view class="mode-item {{diningMode === 'take-out' ? 'active' : ''}}" bindtap="switchDiningMode" data-mode="take-out">外带</view>
-    </view>
+  <!-- 顶部 Banner 背景 -->
+  <view class="banner-area">
+    <image class="banner-img" src="https://img.yzcdn.cn/vant/cat.jpeg" mode="aspectFill"></image> <!-- 占位图 -->
+    <view class="privacy-tag">隐私政策 ></view>
   </view>
 
-  <!-- 中间：菜单区域 -->
-  <view class="menu-container">
-    <!-- 左侧分类导航 -->
-    <scroll-view scroll-y class="sidebar">
-      <block wx:for="{{categories}}" wx:key="id">
-        <view class="category-item {{activeCategory === index ? 'active' : ''}}" 
-              bindtap="switchCategory" 
-              data-index="{{index}}">
-          <text>{{item.name}}</text>
+  <!-- 悬浮卡片区 -->
+  <view class="card-container">
+    <!-- 用户信息卡 -->
+    <view class="user-card">
+      <view class="user-row">
+        <view class="user-left">
+          <image class="avatar" src="https://img.yzcdn.cn/vant/cat.jpeg"></image>
+          <text class="username">肯德基网友 ></text>
         </view>
-      </block>
-    </scroll-view>
-
-    <!-- 右侧菜品列表 -->
-    <scroll-view scroll-y class="content" scroll-into-view="{{toView}}" scroll-with-animation>
-      <block wx:for="{{menuData}}" wx:key="id" wx:for-item="category">
-        <view class="category-header" id="category-{{category.id}}">
-          <text>{{category.category}}</text>
-        </view>
-        <view class="dish-list">
-          <block wx:for="{{category.items}}" wx:key="id" wx:for-item="dish">
-            <view class="dish-item">
-              <image class="dish-img" src="{{dish.image}}" mode="aspectFill"></image>
-              <view class="dish-info">
-                <text class="dish-name">{{dish.name}}</text>
-                <text class="dish-desc">{{dish.desc}}</text>
-                <view class="price-row">
-                  <text class="dish-price">¥{{dish.price}}</text>
-                  <button class="add-btn" size="mini" bindtap="addToCart" data-item="{{dish}}">+</button>
-                </view>
-              </view>
-            </view>
-          </block>
-        </view>
-      </block>
-      <view class="footer-spacer"></view> <!-- 防止底部被购物车遮挡 -->
-    </scroll-view>
-  </view>
-
-  <!-- 底部：购物车栏 -->
-  <view class="cart-bar">
-    <view class="cart-icon-wrapper" bindtap="toggleCartPopup">
-      <image class="cart-icon" src="https://img.icons8.com/ios-filled/50/shopping-cart.png"></image> <!-- 需替换为本地图标 -->
-      <view class="badge" wx:if="{{totalCount > 0}}">{{totalCount}}</view>
-    </view>
-    <view class="cart-price">
-      <text class="total-price">¥{{totalPrice}}</text>
-      <text class="delivery-fee">另需配送费 ¥0</text>
-    </view>
-    <button class="checkout-btn {{totalCount > 0 ? 'active' : ''}}" bindtap="onCheckout">去结算</button>
-  </view>
-
-  <!-- 购物车详情弹窗 (简单模拟) -->
-  <view class="cart-popup" wx:if="{{cartPopupVisible}}">
-    <view class="cart-header">
-      <text>购物车</text>
-      <text bindtap="toggleCartPopup">关闭</text>
-    </view>
-    <scroll-view scroll-y class="cart-list">
-      <block wx:for="{{cart}}" wx:key="id">
-        <view class="cart-item">
-          <text class="cart-name">{{item.name}}</text>
-          <view class="cart-actions">
-            <text class="cart-price">¥{{item.price * item.quantity}}</text>
-            <button size="mini" bindtap="removeFromCart" data-item="{{item}}">-</button>
-            <text class="cart-qty">{{item.quantity}}</text>
-            <button size="mini" bindtap="addToCart" data-item="{{item}}">+</button>
+        <view class="user-actions">
+          <view class="action-item">
+            <text class="icon">🏁</text>
+            <text>会员码</text>
+          </view>
+          <view class="action-item">
+            <text class="icon">👛</text>
+            <text>卡包</text>
+          </view>
+          <view class="action-item">
+            <text class="icon">📋</text>
+            <text>订单</text>
           </view>
         </view>
-      </block>
-    </scroll-view>
+      </view>
+      
+      <!-- 门店信息 -->
+      <view class="store-info-row">
+        <view class="store-text">
+          <view class="store-title">
+            <text class="store-name">爱华广场餐厅</text>
+            <text class="arrow-down">▼</text>
+          </view>
+          <text class="store-address">跃进路36号爱华广场3号商场首层</text>
+          <text class="store-hours">营业时间: 24小时</text>
+          <view class="store-tags">
+            <text class="tag">宠物餐厅</text>
+            <text class="tag">24小时</text>
+            <text class="tag">洗手间</text>
+          </view>
+        </view>
+        <view class="store-img-wrap">
+          <image class="store-img" src="https://img.yzcdn.cn/vant/cat.jpeg"></image>
+          <text class="img-count">1/2 ></text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 开始点餐按钮 -->
+    <view class="order-btn-area">
+      <button class="start-order-btn" bindtap="goToMenu">
+        <text class="btn-icon">🍴</text>
+        <view class="btn-text">
+          <text class="main-text">开始点餐</text>
+          <text class="sub-text">Order Now</text>
+        </view>
+      </button>
+    </view>
+
+    <!-- 底部大神卡广告 -->
+    <view class="promo-section">
+      <view class="promo-title">大神卡·早餐两件套6折起</view>
+      <view class="promo-cards">
+        <view class="promo-card">
+          <image class="food-img" src="https://img.yzcdn.cn/vant/cat.jpeg"></image>
+          <view class="promo-info">
+            <text class="food-name">乳酪花生云朵...</text>
+            <text class="vip-price">¥8.3</text>
+            <text class="orig-price">¥24.9</text>
+            <button class="add-mini">+</button>
+          </view>
+        </view>
+        <view class="promo-card">
+          <image class="food-img" src="https://img.yzcdn.cn/vant/cat.jpeg"></image>
+          <view class="promo-info">
+            <text class="food-name">芝士猪柳帕尼...</text>
+            <text class="vip-price">¥9.6</text>
+            <text class="orig-price">¥26</text>
+            <button class="add-mini">+</button>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="footer-text">已经到底部了</view>
   </view>
 </view>
+

@@ -1,4 +1,6 @@
 {
   "usingComponents": {},
-  "navigationBarTitleText": "点餐首页"
+  "navigationBarTitleText": "KFC 自助点餐",
+  "navigationBarBackgroundColor": "#D62F36",
+  "navigationBarTextStyle": "white"
 }

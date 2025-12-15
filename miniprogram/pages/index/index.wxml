@@ -1,23 +1,86 @@
 <view class="container">
-  <view class="header">
-    <text class="title">今日菜单</text>
+  <!-- 顶部：堂食/外带切换 -->
+  <view class="top-bar">
+    <view class="store-info">
+      <text class="store-name">KFC (实训店)</text>
+      <text class="store-distance">距离您 50m</text>
+    </view>
+    <view class="dining-mode-switch">
+      <view class="mode-item {{diningMode === 'eat-in' ? 'active' : ''}}" bindtap="switchDiningMode" data-mode="eat-in">堂食</view>
+      <view class="mode-item {{diningMode === 'take-out' ? 'active' : ''}}" bindtap="switchDiningMode" data-mode="take-out">外带</view>
+    </view>
   </view>
 
-  <scroll-view scroll-y="true" class="menu-list">
-    <block wx:for="{{dishes}}" wx:key="id">
-      <view class="dish-card">
-        <image class="dish-img" src="{{item.image}}" mode="aspectFill"></image>
-        <view class="dish-info">
-          <text class="dish-name">{{item.name}}</text>
-          <text class="dish-price">¥{{item.price}}</text>
-          <button class="add-btn" size="mini" bindtap="addToCart" data-item="{{item}}">选购</button>
+  <!-- 中间：菜单区域 -->
+  <view class="menu-container">
+    <!-- 左侧分类导航 -->
+    <scroll-view scroll-y class="sidebar">
+      <block wx:for="{{categories}}" wx:key="id">
+        <view class="category-item {{activeCategory === index ? 'active' : ''}}" 
+              bindtap="switchCategory" 
+              data-index="{{index}}">
+          <text>{{item.name}}</text>
         </view>
-      </view>
-    </block>
-    
-    <!-- 空状态提示 -->
-    <view wx:if="{{!loading && dishes.length === 0}}" class="empty-tip">
-      <text>暂无菜品，请联系管理员添加</text>
+      </block>
+    </scroll-view>
+
+    <!-- 右侧菜品列表 -->
+    <scroll-view scroll-y class="content" scroll-into-view="{{toView}}" scroll-with-animation>
+      <block wx:for="{{menuData}}" wx:key="id" wx:for-item="category">
+        <view class="category-header" id="category-{{category.id}}">
+          <text>{{category.category}}</text>
+        </view>
+        <view class="dish-list">
+          <block wx:for="{{category.items}}" wx:key="id" wx:for-item="dish">
+            <view class="dish-item">
+              <image class="dish-img" src="{{dish.image}}" mode="aspectFill"></image>
+              <view class="dish-info">
+                <text class="dish-name">{{dish.name}}</text>
+                <text class="dish-desc">{{dish.desc}}</text>
+                <view class="price-row">
+                  <text class="dish-price">¥{{dish.price}}</text>
+                  <button class="add-btn" size="mini" bindtap="addToCart" data-item="{{dish}}">+</button>
+                </view>
+              </view>
+            </view>
+          </block>
+        </view>
+      </block>
+      <view class="footer-spacer"></view> <!-- 防止底部被购物车遮挡 -->
+    </scroll-view>
+  </view>
+
+  <!-- 底部：购物车栏 -->
+  <view class="cart-bar">
+    <view class="cart-icon-wrapper" bindtap="toggleCartPopup">
+      <image class="cart-icon" src="https://img.icons8.com/ios-filled/50/shopping-cart.png"></image> <!-- 需替换为本地图标 -->
+      <view class="badge" wx:if="{{totalCount > 0}}">{{totalCount}}</view>
     </view>
-  </scroll-view>
+    <view class="cart-price">
+      <text class="total-price">¥{{totalPrice}}</text>
+      <text class="delivery-fee">另需配送费 ¥0</text>
+    </view>
+    <button class="checkout-btn {{totalCount > 0 ? 'active' : ''}}" bindtap="onCheckout">去结算</button>
+  </view>
+
+  <!-- 购物车详情弹窗 (简单模拟) -->
+  <view class="cart-popup" wx:if="{{cartPopupVisible}}">
+    <view class="cart-header">
+      <text>购物车</text>
+      <text bindtap="toggleCartPopup">关闭</text>
+    </view>
+    <scroll-view scroll-y class="cart-list">
+      <block wx:for="{{cart}}" wx:key="id">
+        <view class="cart-item">
+          <text class="cart-name">{{item.name}}</text>
+          <view class="cart-actions">
+            <text class="cart-price">¥{{item.price * item.quantity}}</text>
+            <button size="mini" bindtap="removeFromCart" data-item="{{item}}">-</button>
+            <text class="cart-qty">{{item.quantity}}</text>
+            <button size="mini" bindtap="addToCart" data-item="{{item}}">+</button>
+          </view>
+        </view>
+      </block>
+    </scroll-view>
+  </view>
 </view>
